@@ -5,7 +5,7 @@ function J = Bayes_learning(train, valid)
     PC1 = [.1 .2 .3 .4 .5 .6 .7 .8 .9];
     PC0 = [.9 .8 .7 .6 .5 .4 .3 .2 .1];
 
-
+    output = [];
 
     %calculate likelihood for class 1 and 0
     N = size(A, 1);
@@ -48,11 +48,19 @@ function J = Bayes_learning(train, valid)
     eq0 = diff(runningEq0) == 0;
     ans0 = vpa(solve(eq0));
     
+    output(1) = ans1;
+    output(2) = ans0;
+    
+    %TODO: change calculation to logs?!
+    
     %loop through each prior
     numExamples = size(B, 1);
     errorRates = [];
+    bestPrior = 1;
+    prevErrorRate = 1;
     for k = 1 : size(PC1, 2)
         prior = k
+        
         %CLASSIFY VALIDATION DATA
         classes = B(:, end);
         numErrors = 0;
@@ -71,6 +79,7 @@ function J = Bayes_learning(train, valid)
                 runningProb0 = runningProb0 * prob0;
             end
         
+            %calculate posteriors
             posterior1 = runningProb1 * PC1(1, k);
             posterior0 = runningProb0 * PC0(1, k);
         
@@ -89,13 +98,22 @@ function J = Bayes_learning(train, valid)
                 end
             end
         end
+        %calculate the error rate and add to a vector for display
         errorRate = numErrors / numExamples;
         errorRates(end+1, 1)= errorRate;
+        
+        %look to see if this prior is better than the previous one
+        if errorRate < prevErrorRate
+           bestPrior = PC1(1, k); 
+        end
+        prevErrorRate = errorRate;
     end
     class1Priors = {'P(c1) = .1';'P(c1) = .2';'P(c1) = .3';'P(c1) = .4';
         'P(c1) = .5';'P(c1) = .6';'P(c1) = .7';'P(c1) = .8';'P(c1) = .9'};
     Table = table(errorRates, 'RowNames', class1Priors)
-    
+    output(3) = bestPrior;
+    output(4) = 1 - bestPrior;
+    J = output;
 end
 
 

@@ -1,0 +1,102 @@
+function J = Bayes_learning(train, valid)
+    A = importdata(train);
+    B = importdata(valid);
+
+    PC1 = [.1 .2 .3 .4 .5 .6 .7 .8 .9];
+    PC0 = [.9 .8 .7 .6 .5 .4 .3 .2 .1];
+
+
+
+    %calculate likelihood for class 1 and 0
+    N = size(A, 1);
+    runningEq1 = 0;
+    runningEq0 = 0;
+    for i = 1 : size(A, 2) -1 %loop through each feature (column)
+        numOnes1 = 0;
+        numOnes0 = 0;
+        for j = 1 : size(A, 1) %loop through each row (sample)
+            class = A(j, end);
+            if A(j, i) == 1 && class == 1
+               numOnes1 = numOnes1 + 1; 
+            elseif A(j, i) == 1 && class == 0
+                numOnes0 = numOnes0 + 1;
+            end
+        end
+        
+        %probability = numOnes1 / N;
+        numZeros1 = N - numOnes1;
+        numZeros0 = N - numOnes0;
+        
+        %add all of the likelihood equations together
+        syms p1
+        f1 = log((p1^numOnes1)) + log((1-p1)^numZeros1);
+        runningEq1 = runningEq1 + f1;
+        
+     
+        syms p0
+        f0 = log((p0^numOnes0)) + log((1-p0)^numZeros0);
+        runningEq0 = runningEq0 + f0;
+        
+    end
+    
+    
+    %maximize class 1
+    eq1 = diff(runningEq1) == 0;
+    ans1 = vpa(solve(eq1));
+    
+    %maximize class 0
+    eq0 = diff(runningEq0) == 0;
+    ans0 = vpa(solve(eq0));
+    
+    %loop through each prior
+    for k = 1 : size(PC1
+    
+    
+    %CLASSIFY VALIDATION DATA
+    classes = B(:, end);
+    numErrors = 0;
+    for i = 1 : size(B, 1) %loop through each row
+        runningProb1 = 1;
+        runningProb0 = 1;
+        for j = 1 : size(B, 2) - 1 %loop through each column
+            if B(i, j) == 1
+               prob1 = ans1^1;
+               prob0 = ans0^1;
+            elseif B(i, j) == 0
+               prob1 = (1-ans1)^1;
+               prob0 = (1-ans0)^1;
+            end
+            runningProb1 = runningProb1 * prob1;
+            runningProb0 = runningProb0 * prob0;
+        end
+        
+        posterior1 = runningProb1 * PC1(1, 5); %TODO: change this to loop
+        posterior0 = runningProb0 * PC0(1, 5);
+        
+        %classify
+        if posterior1 > posterior0
+            disp('class1');
+            class = classes(i, 1);
+            if class ~= 1
+               numErrors = numErrors + 1; 
+            end
+        elseif posterior0 > posterior1
+            disp('class0');
+            class = classes(i, 1);
+            if class ~= 0
+               numErrors = numErrors + 1; 
+            end
+        end
+    end
+    
+    numErrors
+    
+    
+end
+
+
+
+
+
+
+

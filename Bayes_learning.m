@@ -1,7 +1,10 @@
 function J = Bayes_learning(train, valid)
+    %TODO: change names of parameters?!
+    
     A = importdata(train);
     B = importdata(valid);
 
+    %priors
     PC1 = [.1 .2 .3 .4 .5 .6 .7 .8 .9];
     PC0 = [.9 .8 .7 .6 .5 .4 .3 .2 .1];
 
@@ -59,7 +62,7 @@ function J = Bayes_learning(train, valid)
     bestPrior = 1;
     prevErrorRate = 1;
     for k = 1 : size(PC1, 2)
-        prior = k
+        prior = k;
         
         %CLASSIFY VALIDATION DATA
         classes = B(:, end);

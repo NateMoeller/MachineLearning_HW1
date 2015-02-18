@@ -37,5 +37,7 @@ function J = Bayes_testing(test_data, p1, p2, pc1, pc2)
             end
         end
     end
+    
+    %output error rate
     errorRate = numErrors / numExamples
 end

@@ -1,5 +1,4 @@
 function J = Bayes_learning(train, valid)
-    %TODO: change names of parameters?!
     
     A = importdata(train);
     B = importdata(valid);
@@ -53,8 +52,6 @@ function J = Bayes_learning(train, valid)
     
     output(1) = ans1;
     output(2) = ans0;
-    
-    %TODO: change calculation to logs?!
     
     %loop through each prior
     numExamples = size(B, 1);
@@ -111,6 +108,8 @@ function J = Bayes_learning(train, valid)
         end
         prevErrorRate = errorRate;
     end
+    
+    %output
     class1Priors = {'P(c1) = .1';'P(c1) = .2';'P(c1) = .3';'P(c1) = .4';
         'P(c1) = .5';'P(c1) = .6';'P(c1) = .7';'P(c1) = .8';'P(c1) = .9'};
     Table = table(errorRates, 'RowNames', class1Priors)
